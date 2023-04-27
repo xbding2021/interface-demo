@@ -1,0 +1,147 @@
+<?xml version="1.0" ?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <property name="APP_NAME" value="one-code-permit" />
+    <property name="LOG_PATH" value="/data/${APP_NAME}/logs" />
+    <property name="LOG_FILE" value="${LOG_PATH}/application.log" />
+
+    <appender name="APPLICATION" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%thread] [seq=%X{trace_id}] %m%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <maxFileSize>500MB</maxFileSize>
+            <totalSizeCap>40GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="SYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold >20</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 队列满了不阻塞调用者-->
+        <neverBlock>true</neverBlock>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref ="APPLICATION"/>
+    </appender>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+
+    <!-- 按照每天生成日志文件 -->
+    <appender name="HEALTH-CODE-DAO"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/health-code-dao.log</File>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名 -->
+            <FileNamePattern>${LOG_PATH}/health-code-dao.log.%d{yyyy-MM-dd}
+            </FileNamePattern>
+            <!--日志文件保留天数 -->
+            <MaxHistory>7</MaxHistory>
+        </rollingPolicy>
+        <encoder
+                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - [%thread] - %-5p: [%c] -- %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="HEALTH-CODE-SERVICE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/health-code-service.log</File>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名 -->
+            <FileNamePattern>${LOG_PATH}/health-code-service.log.%d{yyyy-MM-dd}
+            </FileNamePattern>
+            <!--日志文件保留天数 -->
+            <MaxHistory>7</MaxHistory>
+        </rollingPolicy>
+        <encoder
+                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - [%thread] - %-5p: [%c] -- %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="HEALTH-CODE-SAL"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/health-code-sal.log</File>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名 -->
+            <FileNamePattern>${LOG_PATH}/health-code-sal.log.%d{yyyy-MM-dd}
+            </FileNamePattern>
+            <!--日志文件保留天数 -->
+            <MaxHistory>7</MaxHistory>
+        </rollingPolicy>
+        <encoder
+                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - [%thread] - %-5p: [%c] -- %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="COMMON-ERROR"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/common-error.log</File>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名 -->
+            <FileNamePattern>${LOG_PATH}/common-error.log.%d{yyyy-MM-dd}
+            </FileNamePattern>
+            <!--日志文件保留天数 -->
+            <MaxHistory>7</MaxHistory>
+        </rollingPolicy>
+        <encoder
+                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - [%thread] - %-5p: [%c] -- %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="SERVICE"
+            level="INFO" additivity="false">
+        <appender-ref ref="HEALTH-CODE-SERVICE"/>
+    </logger>
+
+    <logger name="SAL"
+            level="INFO" additivity="false">
+        <appender-ref ref="HEALTH-CODE-SAL"/>
+    </logger>
+
+    <logger name="DAL"
+            level="INFO" additivity="false">
+        <appender-ref ref="HEALTH-CODE-DAO"/>
+    </logger>
+    <logger name="com.aliyun.police.brian.onecodepermit" level="INFO" additivity="false">
+        <appender-ref ref="SYNC" />
+        <appender-ref ref="COMMON-ERROR" />
+    </logger>
+
+    <springProfile name="local,test">
+        <logger name="com.aliyun.police.brian.onecodepermit" level="INFO" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+    <root level="ERROR">
+        <appender-ref ref="COMMON-ERROR" />
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

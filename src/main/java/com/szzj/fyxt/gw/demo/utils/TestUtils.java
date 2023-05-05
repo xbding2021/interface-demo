@@ -17,6 +17,7 @@ public class TestUtils {
         Map<String, String> header = new HashMap<>();
         header.put("APP-ID", StartConfig.APP_ID);
         log.info("cherry-pick1");
+        log.info("cherry-pick2");
         return httpUtil.sendHttpPostJson(url, content, header);
     }
 }
